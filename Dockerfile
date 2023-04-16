@@ -14,11 +14,18 @@ ARG DEV=false
 # create virtual env in docker, install requirements, create user (to not use the root to run the application)
 RUN python -m venv /py && \ 
     /py/bin/pip install --upgrade pip && \
+    # add dependencies for postgresql
+    apk add --update --no-cache postgresql-client && \
+    # install packages in folder, so it can be removed
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        build-base postgresql-dev musl-dev && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     if [ $DEV = "true" ];  \
         then /py/bin/pip install -r /tmp/requirements.dev.txt;\
     fi && \ 
+    # remove of non needed files and dependencies after installation
     rm -rf /tmp && \
+    apk del .tmp-build-deps && \
     adduser \
         --disabled-password \
         --no-create-home \
