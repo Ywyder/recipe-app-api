@@ -46,7 +46,7 @@ class PublicUserApiTests(TestCase):
             'password': 'testpass123',
             'name': 'Test Name',
         }
-        #create_user(**payload)
+        create_user(**payload)
 
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -57,7 +57,7 @@ class PublicUserApiTests(TestCase):
         """Test an error is returned if password less than 5 chars."""
         payload = {
             'email': 'test@example.com',
-            'password': 'testpass123',
+            'password': 'pw',
             'name': 'Test Name',
         }
         res = self.client.post(CREATE_USER_URL, payload)
