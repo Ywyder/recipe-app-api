@@ -57,7 +57,7 @@ class PublicRecipeAPITests(TestCase):
         """Test that auth is required for API call."""
         res = self.client.get(RECIPES_URL)
 
-        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class PrivateRecipeApiTests(TestCase):
@@ -67,7 +67,7 @@ class PrivateRecipeApiTests(TestCase):
         self.client = APIClient()
         self.user = create_user(
             email='user@example.ch', password='testpass123'
-            )
+        )
         self.client.force_authenticate(self.user)
 
     def test_retrieve_recipes(self):
@@ -176,7 +176,7 @@ class PrivateRecipeApiTests(TestCase):
 
         payload = {
             'user': new_user.id
-            }
+        }
         url = detail_url(recipe.id)
         self.client.patch(url, payload)
 
