@@ -37,7 +37,7 @@ def create_recipe(user, **params):
         'time_minutes': 22,
         'price': Decimal('5.25'),
         'description': 'Sample description',
-        'link': 'http//example.com/recipe.pdf'
+        'link': 'http://example.com/recipe.pdf'
     }
     defaults.update(params)
 
@@ -136,15 +136,12 @@ class PrivateRecipeApiTests(TestCase):
             link=original_link
         )
 
-        payload = {
-            'title': 'New recipe title'
-        }
+        payload = {'title': 'New recipe title'}
         url = detail_url(recipe.id)
         res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         recipe.refresh_from_db()
-        print('#### object ###: ', recipe)
         self.assertEqual(recipe.title, payload['title'])
         self.assertEqual(recipe.link, original_link)
         self.assertEqual(recipe.user, self.user)
@@ -163,7 +160,7 @@ class PrivateRecipeApiTests(TestCase):
             'link': 'https://example.com/new-recipe.pdf',
             'description': 'New sample reciption',
             'time_minutes': 12,
-            'price': Decimal('2.50')
+            'price': Decimal('2.50'),
         }
 
         url = detail_url(recipe.id)
@@ -180,9 +177,7 @@ class PrivateRecipeApiTests(TestCase):
         new_user = create_user(email='user2@example.ccom', password='test123')
         recipe = create_recipe(user=self.user)
 
-        payload = {
-            'user': new_user.id
-        }
+        payload = {'user': new_user.id}
         url = detail_url(recipe.id)
         self.client.patch(url, payload)
 
