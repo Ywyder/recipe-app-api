@@ -86,8 +86,8 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_recipe_list_limited_to_user(self):
-        """Test list of recipes is limited to authenticated user."""
+    def test_recipe_list_other_users(self):
+        """Test list of recipes does contain other user."""
         other_user = create_user(
             email='other@example.com', password='password123')
         create_recipe(user=other_user)
@@ -95,7 +95,7 @@ class PrivateRecipeApiTests(TestCase):
 
         res = self.client.get(RECIPES_URL)
 
-        recipes = Recipe.objects.filter(user=self.user)
+        recipes = Recipe.objects.all()
         serializer = RecipeSerializer(recipes, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -202,7 +202,7 @@ class PrivateRecipeApiTests(TestCase):
         url = detail_url(recipe.id)
         res = self.client.delete(url)
 
-        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         self.assertTrue(Recipe.objects.filter(id=recipe.id).exists())
 
     def teste_create_recipe_with_new_tags(self):

@@ -50,7 +50,9 @@ class Recipe(models.Model):
     """Recipe object."""
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
