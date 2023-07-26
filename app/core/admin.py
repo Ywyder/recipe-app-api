@@ -50,3 +50,4 @@ admin.site.register(models.User, UserAdmin)
 # added to use the above customization
 admin.site.register(models.Recipe)
 admin.site.register(models.Tag)
+admin.site.register(models.Ingredient)
