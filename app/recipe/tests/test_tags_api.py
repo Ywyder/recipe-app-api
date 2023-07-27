@@ -62,15 +62,17 @@ class PrivateTagsApiTests(TestCase):
     def test_tags_limited_to_user(self):
         """Test list of tags is limited to authenicated user."""
         user2 = create_user(email='user2@example.com')
-        Tag.objects.create(user=user2, name='Fruity')
-        tag = Tag.objects.create(user=self.user, name='Comfort food')
+        tag1 = Tag.objects.create(user=user2, name='Fruity')
+        tag2 = Tag.objects.create(user=self.user, name='Comfort food')
 
         res = self.client.get(TAGS_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 2)
-        self.assertEqual(res.data[0]['name'], tag.name)
-        self.assertEqual(res.data[0]['id'], tag.id)
+        self.assertEqual(res.data[0]['name'], tag1.name)
+        self.assertEqual(res.data[0]['id'], tag1.id)
+        self.assertEqual(res.data[1]['name'], tag2.name)
+        self.assertEqual(res.data[1]['id'], tag2.id)
 
     def test_update_tag(self):
         """Test updating a tag."""

@@ -5,11 +5,10 @@ Views for the recipe APIs.
 from rest_framework import (
     viewsets,
     mixins,
-    exceptions,
 )
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
+from django.core.exceptions import PermissionDenied
 
 from core.models import (
     Recipe,
@@ -44,8 +43,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, serializer):
         """Delete a recipe limited to recipe created by user."""
         if serializer.user != self.request.user:
-            raise PermissionDenied(
-                "You do not have permission to delete this object.")
+            raise PermissionDenied()
 
         serializer.delete()
 
@@ -67,8 +65,10 @@ class TagViewSet(mixins.DestroyModelMixin,
     def perform_destroy(self, serializer):
         """Delete a tag limited to tags created by user."""
         if serializer.user != self.request.user:
-            raise PermissionDenied(
-                "You do not have permission to delete this object.")
+            raise serializers.ValidationError(
+                "You do not have permission to delete this object.",
+                code='authorization'
+            )
 
         serializer.delete()
 
@@ -90,7 +90,9 @@ class IngredientViewSet(mixins.DestroyModelMixin,
     def perform_destroy(self, serializer):
         """Delete a ingredient limited to ingredients created by user."""
         if serializer.user != self.request.user:
-            raise PermissionDenied(
-                "You do not have permission to delete this object.")
+            raise serializers.ValidationError(
+                "You do not have permission to delete this object.",
+                code='authorization'
+            )
 
         serializer.delete()
