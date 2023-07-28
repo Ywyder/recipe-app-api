@@ -55,3 +55,18 @@ class PrivateIngredientsApiTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_ingredients_all_users(self):
+        """Test recieving ingredients from other users."""
+        create_user(email='other@example.com', password='pass123')
+        Ingredient.objects.create(user=self.user, name='Vanilla')
+        Ingredient.objects.create(user=self.user, name='Sugar')
+
+        res = self.client.get(INGREDIENTS_URL)
+
+        ingredients = Ingredient.objects.all().order_by('-name')
+        serializer = IngredientSerializer(ingredients, many=True)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(len(res.data), 2)
