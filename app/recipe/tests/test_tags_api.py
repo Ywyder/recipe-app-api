@@ -94,3 +94,18 @@ class PrivateTagsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         tags = Tag.objects.filter(user=self.user)
         self.assertFalse(tags.exists())
+
+    def test_delete_tag_other_user(self):
+        """Test deleting an tag."""
+        other_user = create_user(
+            email="user2@example.com",
+            password="testpass123"
+            )
+        tag = Tag.objects.create(user=other_user, name='Onions')
+
+        url = detail_url(tag.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        tags = Tag.objects.filter(user=self.user)
+        self.assertFalse(tags.exists())
