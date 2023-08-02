@@ -85,7 +85,7 @@ class IngredientViewSet(mixins.DestroyModelMixin,
 
     def get_queryset(self):
         """Retrieve ingredients for authenticated user."""
-        return self.queryset.filter(user=self.request.user).order_by('id')
+        return self.queryset.order_by('id')
 
     def perform_destroy(self, serializer):
         """Delete a ingredient limited to ingredients created by user."""
