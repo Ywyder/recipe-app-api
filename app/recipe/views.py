@@ -65,10 +65,7 @@ class TagViewSet(mixins.DestroyModelMixin,
     def perform_destroy(self, serializer):
         """Delete a tag limited to tags created by user."""
         if serializer.user != self.request.user:
-            raise serializers.ValidationError(
-                "You do not have permission to delete this object.",
-                code='authorization'
-            )
+            raise PermissionDenied()
 
         serializer.delete()
 
@@ -90,9 +87,6 @@ class IngredientViewSet(mixins.DestroyModelMixin,
     def perform_destroy(self, serializer):
         """Delete a ingredient limited to ingredients created by user."""
         if serializer.user != self.request.user:
-            raise serializers.ValidationError(
-                "You do not have permission to delete this object.",
-                code='authorization'
-            )
+            raise PermissionDenied()
 
         serializer.delete()

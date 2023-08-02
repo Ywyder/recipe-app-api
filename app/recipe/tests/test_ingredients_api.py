@@ -88,3 +88,29 @@ class PrivateIngredientsApiTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         ingredient.refresh_from_db()
         self.assertEqual(ingredient.name, payload['name'])
+
+    def test_delete_ingredient(self):
+        """Test deleting an ingredient."""
+        ingredient = Ingredient.objects.create(user=self.user, name='Lettuce')
+
+        url = detail_url(ingredient.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        ingredients = Ingredient.objects.filter(user=self.user)
+        self.assertFalse(ingredients.exists())
+
+    def test_delete_ingredient_other_user(self):
+        """Test deleting an ingredient."""
+        other_user = create_user(
+            email="user2@example.com",
+            password="testpass123"
+            )
+        ingredient = Ingredient.objects.create(user=other_user, name='Onions')
+
+        url = detail_url(ingredient.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        ingredients = Ingredient.objects.filter(user=self.user)
+        self.assertFalse(ingredients.exists())
