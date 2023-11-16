@@ -42,8 +42,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, serializer):
         """Delete a recipe limited to recipe created by user."""
-        # if serializer.user != self.request.user:
-        #     raise PermissionDenied()
+        if serializer.user != self.request.user:
+            raise PermissionDenied()
 
         serializer.delete()
 

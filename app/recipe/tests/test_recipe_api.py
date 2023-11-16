@@ -194,17 +194,17 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Recipe.objects.filter(id=recipe.id).exists())
 
-    # def test_delete_recipe_other_users_recipe_error(self):
-    #     """Test trying to delete another users recipe gives error."""
-    #     new_user = create_user(email='user2@example.com',
-    #                            password='test1234')
-    #     recipe = create_recipe(user=new_user)
+    def test_delete_recipe_other_users_recipe_error(self):
+        """Test trying to delete another users recipe gives error."""
+        new_user = create_user(email='user2@example.com',
+                               password='test1234')
+        recipe = create_recipe(user=new_user)
 
-    #     url = detail_url(recipe.id)
-    #     res = self.client.delete(url)
+        url = detail_url(recipe.id)
+        res = self.client.delete(url)
 
-    #     self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
-    #     self.assertTrue(Recipe.objects.filter(id=recipe.id).exists())
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(Recipe.objects.filter(id=recipe.id).exists())
 
     def teste_create_recipe_with_new_tags(self):
         """Test creating a recipe with new tags."""
