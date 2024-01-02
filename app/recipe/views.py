@@ -48,40 +48,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.delete()
 
 
-class TagViewSet(mixins.DestroyModelMixin,
-                 mixins.UpdateModelMixin,
-                 mixins.ListModelMixin,
-                 viewsets.GenericViewSet):
-    """Manage tags in the database."""
-    serializer_class = serializers.TagSerializer
-    queryset = Tag.objects.all()
+class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
+                            mixins.UpdateModelMixin,
+                            mixins.ListModelMixin,
+                            viewsets.GenericViewSet):
+    """Base vieset for recipe attributes (tags, ingredients). """
+
     authenication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        """Retrieve tags for authenticated user."""
-        return self.queryset.order_by('id')
-
-    def perform_destroy(self, serializer):
-        """Delete a tag limited to tags created by user."""
-        if serializer.user != self.request.user:
-            raise PermissionDenied()
-
-        serializer.delete()
-
-
-class IngredientViewSet(mixins.DestroyModelMixin,
-                        mixins.UpdateModelMixin,
-                        mixins.ListModelMixin,
-                        viewsets.GenericViewSet):
-    """Manage ingredients in the database."""
-    serializer_class = serializers.IngredientSerializer
-    queryset = Ingredient.objects.all()
-    authenication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        """Retrieve ingredients for authenticated user."""
+        """Retrieve attributes for authenticated user."""
         return self.queryset.order_by('id')
 
     def perform_destroy(self, serializer):
@@ -90,3 +67,15 @@ class IngredientViewSet(mixins.DestroyModelMixin,
             raise PermissionDenied()
 
         serializer.delete()
+
+
+class TagViewSet(BaseRecipeAttrViewSet):
+    """Manage tags in the database."""
+    serializer_class = serializers.TagSerializer
+    queryset = Tag.objects.all()
+
+
+class IngredientViewSet(BaseRecipeAttrViewSet):
+    """Manage ingredients in the database."""
+    serializer_class = serializers.IngredientSerializer
+    queryset = Ingredient.objects.all()
