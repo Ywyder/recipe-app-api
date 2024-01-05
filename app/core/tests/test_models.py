@@ -95,5 +95,5 @@ class ModelTests(TestCase):
         mock_uuid.return_value = uuid
         file_path = models.recipe_image_file_path(None, 'example.jpg')
 
-        # checking that image is created, stored and name is replaced with uuid.
+        # checking image is created, stored and name is replaced with uuid.
         self.assertEqual(file_path, f'uploads/recipe/{uuid}.jpg')
