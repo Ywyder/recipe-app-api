@@ -1,6 +1,7 @@
 """
 Views for the recipe APIs.
 """
+from symbol import parameters
 from drf_spectacular.utils import (
     extend_schema_view,
     extend_schema,
@@ -101,6 +102,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.delete()
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'assigned_only',
+                OpenApiTypes.INT, enum=[0,1],
+                description='Filter by items assigned to recipes.'
+            )
+        ]
+    )
+)
 class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
                             mixins.UpdateModelMixin,
                             mixins.ListModelMixin,
