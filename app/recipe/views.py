@@ -1,7 +1,6 @@
 """
 Views for the recipe APIs.
 """
-from symbol import parameters
 from drf_spectacular.utils import (
     extend_schema_view,
     extend_schema,
@@ -107,7 +106,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         parameters=[
             OpenApiParameter(
                 'assigned_only',
-                OpenApiTypes.INT, enum=[0,1],
+                OpenApiTypes.INT, enum=[0, 1],
                 description='Filter by items assigned to recipes.'
             )
         ]
