@@ -112,7 +112,15 @@ class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
 
     def get_queryset(self):
         """Retrieve attributes for authenticated user."""
-        return self.queryset.order_by('id')
+        assigned_only = bool(
+            int(self.request.query_params.get('assigned_only', 0))
+        )
+        queryset = self.queryset
+        if assigned_only:
+            # filter so that there is a recipe associated.
+            queryset = queryset.filter(recipe__isnull=False)
+
+        return queryset.order_by('id').distinct()
 
     def perform_destroy(self, serializer):
         """Delete a ingredient limited to ingredients created by user."""
