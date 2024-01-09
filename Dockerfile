@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED 1
 # copy files to docker container and expose on port 8000
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
+COPY ./scripts /scripts
 COPY ./app /app
 WORKDIR /app
 EXPOSE 8000
@@ -18,7 +19,7 @@ RUN python -m venv /py && \
     apk add --update --no-cache postgresql-client jpeg-dev && \
     # install packages in folder, so it can be removed
     apk add --update --no-cache --virtual .tmp-build-deps \
-        build-base postgresql-dev musl-dev zlib zlib-dev&& \
+        build-base postgresql-dev musl-dev zlib zlib-dev linux-headers && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     if [ $DEV = "true" ];  \
         then /py/bin/pip install -r /tmp/requirements.dev.txt;\
@@ -34,8 +35,11 @@ RUN python -m venv /py && \
     mkdir -p /vol/web/static && \
     # changin permission and owner of files
     chown -R django-user:django-user /vol && \
-    chmod -R 755 /vol
+    chmod -R 755 /vol && \
+    chmod -R +x /scripts
 
-ENV PATH="/py/bin:$PATH"
+ENV PATH="/scripts:/py/bin:$PATH"
 
 USER django-user
+
+CMD ["run.sh"]
